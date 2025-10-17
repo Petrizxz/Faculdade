@@ -1,0 +1,55 @@
+`timescale 1ns/1ps
+module tb_pedagio;
+    // Entradas (reg porque vamos alterar no tempo)
+    reg E1;
+    reg E0;
+    reg [3:0] P;
+    // Saída (wire porque vem do módulo)
+    wire [6:0] seg;
+
+    reg [6:0] temp;
+    // Instancia o módulo a ser testado
+    // Liga as entradas no modulo do verilog.v
+    pedagio uut (
+        .E1(E1),
+        .E0(E0),
+        .P(P),
+        .seg(seg)
+    );
+    // Bloco inicial de simulação
+    initial begin
+        temp = 0;
+        $dumpfile("pedagio.vcd");
+        $dumpvars(0, tb_pedagio);
+        
+        // Mostra cabeçalho no console
+        //$display("Tempo | E1 E0 P | seg");
+
+        // Mostra sempre que mudar algo
+        //$monitor("%4t | %b  %b  %b | %b", $time, E1, E0, P, seg);
+
+        // Define valores iniciais
+        E1 = 0; E0 = 0; P = 4'b0000;
+
+        // Teste 1
+        /*#10 E1 = 0; E0 = 0; P = 4'b0001;  // Exemplo 1
+        #10 E1 = 0; E0 = 1; P = 4'b0110;  // Exemplo 2
+        #10 E1 = 1; E0 = 0; P = 4'b1010;  // Exemplo 3
+        #10 E1 = 1; E0 = 1; P = 4'b1111;  // Exemplo 4
+
+        #10 $finish; // Encerra simulação*/
+
+    end
+
+    always @(*) begin
+        while (temp<64) begin
+            E1 = temp[5];
+            E0 = temp[4];
+            P = temp[3:0];
+            #5
+            $display("%4dns|%b%b|%b|%b|%d",$time,E1,E0,P,seg,temp);
+            temp = temp + 1;         
+        end
+    end
+
+endmodule
