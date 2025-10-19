@@ -1,2 +1,2 @@
 # Faculdade
-Meus Codicos e aprendizados na faculdade
+Meus Códigos e aprendizados na faculdade
