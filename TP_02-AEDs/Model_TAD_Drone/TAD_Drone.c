@@ -54,7 +54,7 @@ void realizar_entrega(Drone *drone){
         temp_dist += (posicao_atual < 0) ? -(posicao_atual) : posicao_atual;
 
         // Atualiza a posição do drone de acordo com a entrega realizada
-        posicao_atual = pacote.distancia;
+        posicao_atual = get_distancia_endereco(&pacote);
 
         
         // Imprime qual foi a entrega realizada

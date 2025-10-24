@@ -22,30 +22,51 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     // OTAVIO: TOM: Essa foi a primeira modificação, criar o tipo lista combinação
     Lista_combinacao lista_combinacao;
     iniciar_lista_vazia_combinacao(&lista_combinacao);
+    // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
+    //Gera as combinações e armazena elas na lista_combinação
+    // otavio essa é pra vc 
+    Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_carregado);    
 
     // Enquanto tiver item no galpão
     int num_viagem = 1;
 
     //Enquanto tiver pacotes no galpao
-    while (!lista_eh_vazia(&galpao->lista_de_pacotes))
-    {   // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
-        //Gera as combinações e armazena elas na lista_combinação
-        // otavio essa é pra vc 
-        Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_carregado);      
+    while (!lista_eh_vazia(&galpao->lista_de_pacotes)){   
+
         printf("\nCarregando drone com os pacotes!\n" );
+        
+        // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor
+        if (melhor_combinacao->celula_pacotes == NULL) melhor_combinacao = escolher_melhor(&lista_combinacao);
 
         // Verifica enquanto tiver pacote e o drone suportar, ou seja restringe as viagens do drone
-        // Eu acho que não precisa mais verificar 
-        while (!lista_eh_vazia(&galpao->lista_de_pacotes) && carga_suportada(drone, galpao->lista_de_pacotes.primeiro->prox->pacote.peso))
-        {   // Instancia pacote para receber os dados do retirado a baixo
+        // TOM: Verifica as condições
+        // carga suportada acredito que não seja mais necessaria pois dentro de gerar combinações o otavio ja verifica se as combinações não excedem o pesso do drone
+        // Tenho uns 90% de certeza que pode arrancar a carga_suportada dali
+        // Tem que verificar em que momento esse vetor fica vazio mas pra isso precisa implementar o remover pacote meio
+        for(int i = 0; i < melhor_combinacao->num_elementos;i++){
+            // Instancia pacote para receber os dados do retirado a baixo
             Pacote pacote;
+            // TOM: 
             // Retira o pacote do galpao
-            remover_pacote_inicio(&galpao->lista_de_pacotes, &pacote);
+            // Essa função vai receber o ponteiro da celula que vai ser retirada e utilizando o anterior vai ligar com o prox
+            // ex: apagar p2
+            // p2: tem os dados anterior: p1  e proximo p3
+            // p2.anterior.prox   (Esse é o p1) = p2.prox (Esse é o p3)
+            // *pacote = p2.pacote
+            // free(p2)
+            // Acho que seria algo assim
+            remover_pacote_meio(melhor_combinacao->celula_pacotes[i], &pacote);
             
             // Insere o pacote no drone
             carregamento_drone(drone, pacote);
         }
+        
+        // Como ja foi escolhido a melhor opção remove da lista_combinacao todas as opções que não são mais validas
+        remover_combinacoes_com_intersecao(&lista_combinacao, melhor_combinacao);
 
+        // Libera o espaço de memoria alocada para a combinação
+        free(melhor_combinacao->celula_pacotes);
+        melhor_combinacao->celula_pacotes = NULL;
         // Mostra o numero da viagem
         printf("\n-----------------------------------------\n");
         printf("\nViagem: %d\n", num_viagem++);
@@ -58,5 +79,6 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
 
 void imprimi_galpao(Galpao *galpao){
     //apenas teste para para de dar erro
-    printf(galpao->lista_de_pacotes.primeiro->pacote.conteudo);
+    
+    printf(get_conteudo(&galpao->lista_de_pacotes.primeiro->pacote));
 }
