@@ -1,0 +1,17 @@
+20
+15
+remedio joao 2 10 4
+comprasmercado estela 10 8 2
+remedio thais 1 5 4
+comprasmercado glaucia 2 7 2
+remedio leticia 3 2 4
+livro ana 1 15 1
+eletronico carlos 4 25 1
+documento maria 1 3 5
+roupa pedro 5 12 1
+ferramenta sofia 15 30 1
+comida_pronta jorge 1 6 5
+material_escritorio bia 1 18 1
+brinquedo lucas 2 9 1
+muda_planta fernanda 6 22 5
+eletrodomestico henrique 8 14 2

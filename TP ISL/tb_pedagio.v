@@ -8,6 +8,7 @@ module tb_pedagio;
     wire [6:0] seg;
 
     reg [6:0] temp;
+
     // Instancia o módulo a ser testado
     // Liga as entradas no modulo do verilog.v
     pedagio uut (
@@ -16,28 +17,15 @@ module tb_pedagio;
         .P(P),
         .seg(seg)
     );
+
     // Bloco inicial de simulação
     initial begin
         temp = 0;
         $dumpfile("pedagio.vcd");
-        $dumpvars(0, tb_pedagio);
-        
-        // Mostra cabeçalho no console
-        //$display("Tempo | E1 E0 P | seg");
-
-        // Mostra sempre que mudar algo
-        //$monitor("%4t | %b  %b  %b | %b", $time, E1, E0, P, seg);
+        $dumpvars(0, tb_pedagio);   
 
         // Define valores iniciais
         E1 = 0; E0 = 0; P = 4'b0000;
-
-        // Teste 1
-        /*#10 E1 = 0; E0 = 0; P = 4'b0001;  // Exemplo 1
-        #10 E1 = 0; E0 = 1; P = 4'b0110;  // Exemplo 2
-        #10 E1 = 1; E0 = 0; P = 4'b1010;  // Exemplo 3
-        #10 E1 = 1; E0 = 1; P = 4'b1111;  // Exemplo 4
-
-        #10 $finish; // Encerra simulação*/
 
     end
 

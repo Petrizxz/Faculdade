@@ -1,0 +1,40 @@
+{
+    // ===========================================
+    // ARQUIVO: launch.json
+    // Configuração de debug multiplataforma
+    // ===========================================
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug do Projeto (Linux/Mac)",
+            "type": "cppdbg",
+            "request": "launch",
+            // Arquivo compilado no Linux não tem extensão
+            "program": "${workspaceFolder}/tp01",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb",
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug do Projeto (Windows)",
+            "type": "cppdbg",
+            "request": "launch",
+            // No Windows o executável tem extensão .exe
+            "program": "${workspaceFolder}/tp01.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            // Ajuste se o gdb não estiver no PATH (exemplo abaixo para MinGW):
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "preLaunchTask": "build"
+        }
+    ]
+}
