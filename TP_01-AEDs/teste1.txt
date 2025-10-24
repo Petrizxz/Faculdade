@@ -1,0 +1,7 @@
+10
+5
+remedio joao 2 10
+comprasmercado estela 10 8
+remedio thais 1 5
+comprasmercado glaucia 2 7
+remedio leticia 3 2

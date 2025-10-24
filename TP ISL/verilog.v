@@ -4,7 +4,7 @@ module pedagio (
     input  wire [3:0] P,
     output reg  [6:0] seg
 );
-
+    
     wire peso_le_12, peso_gt_12;
     wire C1, C2, C3, ERR;
 

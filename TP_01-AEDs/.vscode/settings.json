@@ -1,0 +1,27 @@
+{
+    "cSpell.words": [
+        "carregamento",
+        "chamamos",
+        "Fazer",
+        "galpao",
+        "inicializar",
+        "iniciar",
+        "inserir",
+        "lista",
+        "pacote",
+        "pacotes",
+        "receber",
+        "tratamento",
+        "Vamos",
+        "vazia"
+    ],
+    "files.associations": {
+        "tad_drone.h": "c",
+        "tuple": "c",
+        "tad_galpao.h": "c",
+        "tad_pacote.h": "c",
+        "tad_lista_pacotes.h": "c",
+        "stdio.h": "c",
+        "stdlib.h": "c"
+    }
+}
