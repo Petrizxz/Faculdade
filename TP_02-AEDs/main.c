@@ -14,7 +14,8 @@ int main(){
 
     // Escolha manual ou por arquivo
     printf("Escolha a forma de entrada de dados\n[1] Manual\n[2] Arquivo\n");
-    scanf("%d", &escolha);
+    //scanf("%d", &escolha);
+    escolha = 2;
 
     switch (escolha){
         case 1: {// caso seja escolhido manual
@@ -62,8 +63,8 @@ int main(){
             char arquivo[20];
 
             printf("\nDigite o nome do arquivo desejado:\n(teste1.txt ou teste2.txt)\n");
-            scanf("%s", arquivo);
-
+            //scanf("%s", arquivo);
+            strcpy(arquivo, "teste1.txt");
             // Manipulação de arquivos
             FILE *file = fopen(arquivo, "r");
             if(file == NULL){

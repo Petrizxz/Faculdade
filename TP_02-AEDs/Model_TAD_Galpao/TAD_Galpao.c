@@ -25,14 +25,13 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
     //Gera as combinações e armazena elas na lista_combinação
     // otavio essa é pra vc 
-    
+    Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_max);    
     // Enquanto tiver item no galpão
     int num_viagem = 1;
     
     //Enquanto tiver pacotes no galpao
     while (!lista_eh_vazia(&galpao->lista_de_pacotes)){   
-        Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_carregado);    
-
+        
         printf("\nCarregando drone com os pacotes!\n" );
         
         // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor
@@ -56,7 +55,6 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
             // free(p2)
             // Acho que seria algo assim
             remover_pacote_meio(&galpao->lista_de_pacotes,melhor_combinacao->celula_pacotes[i], &pacote);
-            imprime_galpao(galpao);
             // Insere o pacote no drone
             carregamento_drone(drone, pacote);
         }
@@ -77,8 +75,4 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     printf("Total de Quilometros Percorridos no Dia: %.0fKm", drone->distancia_total);
 }
 
-void imprime_galpao(Galpao *galpao){
-    //apenas teste para para de dar erro
-    
-    printf(get_conteudo(&galpao->lista_de_pacotes.primeiro->pacote));
-}
+

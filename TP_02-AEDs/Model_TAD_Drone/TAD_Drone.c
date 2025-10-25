@@ -30,7 +30,7 @@ int carregamento_drone(Drone *drone, Pacote pacote){
     inserir_pacote_final(&drone->lista_de_entrega, &pacote);
 
     //Adiciona o peso do pacote ao drone
-    drone->peso_carregado += pacote.peso;
+    drone->peso_carregado += get_peso(&pacote);
     
     return 1;
 }
@@ -46,7 +46,7 @@ void realizar_entrega(Drone *drone){
         remover_pacote_inicio(&drone->lista_de_entrega, &pacote);
         
         // Distancia que o drone percorre partindo da base ou da última entrega para a próxima
-        posicao_atual = pacote.distancia - posicao_atual;
+        posicao_atual = get_distancia_endereco(&pacote) - posicao_atual;
         
         // Somamos o modulo, pois, ele pode percorrer direções opostas à ultima entrega/galpão
         drone->distancia_total += (posicao_atual < 0) ? -(posicao_atual) : posicao_atual;
