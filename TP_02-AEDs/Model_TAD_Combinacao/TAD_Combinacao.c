@@ -11,7 +11,10 @@ void iniciar_lista_vazia_combinacao (Lista_combinacao *lista){
 void inserir_combinacao_final(Lista_combinacao *lista, Celula **vetor_pacotes, int prioridade, int peso, int elementos){
     lista->ultimo->prox = (Celula_Combinacao*) malloc(sizeof(Celula_Combinacao));
     lista->ultimo = lista->ultimo->prox;
-    lista->ultimo->celula_pacotes = vetor_pacotes;
+    lista->ultimo->celula_pacotes = (Celula**) malloc(elementos * sizeof(Celula));
+    for(int i = 0; i < elementos; i++){
+        lista->ultimo->celula_pacotes[i] = vetor_pacotes[i];
+    }
     lista->ultimo->peso_total = peso;
     lista->ultimo->prioridade_total = prioridade;
     lista->ultimo->num_elementos = elementos;
@@ -64,46 +67,84 @@ void remover_combinacoes_com_intersecao(Lista_combinacao *lista, Celula_Combinac
     }
 }
 
-
-
-//OTAVIO: Aqui vai ser onde vc vai implementar as combinações vou deixar explicado em comentario como
-// Recomendo que vc entenda como esta estruturado o tad combinação para ver o como vc vai armazenar
-// Mas basicamente vc vai armazenar os ponteiros no vetor e somar as prioridades e peso deles
-// Essa função ela ja é resposnsavel por gerar todas as combinações e ja retorna para nos a melhor delas
-// de acordo com aquela que tiver a maior prioridade
+/*
+Essa função ela ja é resposnsavel por gerar todas as combinações e ja retorna para nos a melhor delas 
+de acordo com aquela que tiver a maior prioridade
+*/
 Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *lista_galpao, int peso_max_drone){
 
     Celula_Combinacao *melhor_opcao = NULL;
-    //OTAVIO: Esse exemplo a baixo é como vc vai inserir as os ponteiros no novo vetor de celulas 
-    // Você precisass saber o numero de elementoos da combinação
-    // Gera as combinações ex: {p1} , {p2}, {p3}, {p1, p2}, {p1, p3}, {p2, p3}, {p1, p2, p3}
-    //                           1  ,   1 ,   1 ,     2   ,     2   ,     2   ,       3
-    int numero_de_elementos_da_combinacao = 2, prioridade_da_combinacao = 0, peso_da_combinacao = 0;
-    Celula **vetor_pacotes = (Celula**) malloc(numero_de_elementos_da_combinacao * sizeof(Celula*));
 
-    // ai vc insere de acordo com o indice, porem não vai ser desse jeito, lista_galpao->primeiro->prox
-    // vai ser dentro de um for ou um while depende da implementação pra gerar as combinações que vc encontrar
-    
-    vetor_pacotes[0] = lista_galpao->primeiro->prox;
-    vetor_pacotes[1] = lista_galpao->primeiro->prox->prox;
-
-    // Ai aqui no meio vc verifica se o peso é maior que o peso_max_drone e ja descarta essa celula. vc da um free em vetor_pacotes
-    // Não tenho ctz se é assim que descarta da uma jogada no chatgpt pra gente ter ctz
-
-    // por fim vc manda a lista de combinações, prioridade total e o peso total
-    inserir_combinacao_final(lista, vetor_pacotes, 5, 2,numero_de_elementos_da_combinacao);
-
-    // Depois de verificar que a combinação não utrapassa o peso do drone vc vai comparar a prioridade da combinação 
-    // com a melhor e caso seja melhor substituir o valor
-
-    if(melhor_opcao == NULL || melhor_opcao->prioridade_total < prioridade_da_combinacao){
-        //ultimo pois isso vai estar verificando enquanto insere na lista
-        // melhor opção vai ser um ponteiro para o local da lista combinações que tem a melhor combinação
-        melhor_opcao = lista->ultimo;
+    // Pega o numero de pacotes na lista
+    int numero_de_elementos_da_combinacao = 0;
+    Celula *aux = lista_galpao->primeiro->prox;
+    while (aux != NULL) {
+        numero_de_elementos_da_combinacao ++;
+        aux = aux->prox;
     }
 
-    return melhor_opcao;
+     // Array de acesso rápido aos pacotes atuais
+    Celula **todos_pacotes = (Celula**) malloc(numero_de_elementos_da_combinacao * sizeof(Celula*));
+    aux = lista_galpao->primeiro->prox;
+    for(int i = 0; i < numero_de_elementos_da_combinacao; i++) {
+        todos_pacotes[i] = aux;
+        aux = aux->prox;
+    }
 
+    // Gera combinações apenas com pacotes DISPONÍVEIS
+    for (int tamanho = numero_de_elementos_da_combinacao; tamanho >= 1; tamanho--) {
+        int comb[tamanho];
+        
+        // Inicializa com maior combinação
+        for (int i = 0; i < tamanho; i++) {
+            comb[i] = numero_de_elementos_da_combinacao - tamanho + i;
+        }
+        
+        while (1) {
+            int peso_total = 0;
+            int prioridade_total = 0;
+            
+            // Soma o peso e a prioridade da combinação gerada
+            for (int i = 0; i < tamanho; i++) {
+                peso_total += todos_pacotes[comb[i]]->pacote.peso;
+                prioridade_total += todos_pacotes[comb[i]]->pacote.prioridade;
+            }
+
+            // Checa se a combinação é valida ou viavel para o drone 
+            if (peso_total <= peso_max_drone) {
+                Celula **vetor_pacotes = (Celula**) malloc(tamanho * sizeof(Celula*));
+                for (int i = 0; i < tamanho; i++) {
+                    vetor_pacotes[i] = todos_pacotes[comb[i]];
+                }
+
+                // Insere combinação na lista
+                inserir_combinacao_final(lista, vetor_pacotes, prioridade_total, peso_total, tamanho);
+
+                //free em vetor_pacotes (vetor temporario do loop)
+                free(vetor_pacotes);
+
+                // Define a melhor opção e armazena seu endereço
+                if (melhor_opcao == NULL || prioridade_total > melhor_opcao->prioridade_total) {
+                    melhor_opcao = lista->ultimo;
+                }
+            }
+
+            // Próxima combinação...
+            int i = tamanho - 1;
+            while (i >= 0 && comb[i] == i + (numero_de_elementos_da_combinacao - tamanho)) {
+                i--;
+            }
+            if (i < 0) break;
+            
+            comb[i]--;
+            for (int j = i + 1; j < tamanho; j++) {
+                comb[j] = comb[j - 1] + 1;
+            }
+        }
+    }
+
+    free(todos_pacotes);
+    return melhor_opcao;
 }
 
 Celula_Combinacao *escolher_melhor(Lista_combinacao *lista){
