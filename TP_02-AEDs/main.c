@@ -14,8 +14,7 @@ int main(){
 
     // Escolha manual ou por arquivo
     printf("Escolha a forma de entrada de dados\n[1] Manual\n[2] Arquivo\n");
-    //scanf("%d", &escolha);
-    escolha = 2;
+    scanf("%d", &escolha);
 
     switch (escolha){
         case 1: {// caso seja escolhido manual
