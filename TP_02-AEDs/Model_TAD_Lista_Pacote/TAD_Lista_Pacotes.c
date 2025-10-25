@@ -51,9 +51,6 @@ void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote) {
         printf("Erro: célula inválida para remoção.\n");
         return;
     }
-<<<<<<< Updated upstream
-
-=======
     
     // Ponteiro auxiliar para percorrer a lista
     Celula *anterior = lista->primeiro;
@@ -70,7 +67,6 @@ void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote) {
     }
 
     // Copia os dados do pacote que vai ser removido
->>>>>>> Stashed changes
     *pacote = celula->pacote;
 
     // ajusta ligações
