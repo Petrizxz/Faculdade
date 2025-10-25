@@ -56,7 +56,7 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
             // free(p2)
             // Acho que seria algo assim
             remover_pacote_meio(&galpao->lista_de_pacotes,melhor_combinacao->celula_pacotes[i], &pacote);
-            imprimi_galpao(galpao);
+            imprime_galpao(galpao);
             // Insere o pacote no drone
             carregamento_drone(drone, pacote);
         }
@@ -77,7 +77,7 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     printf("Total de Quilometros Percorridos no Dia: %.0fKm", drone->distancia_total);
 }
 
-void imprimi_galpao(Galpao *galpao){
+void imprime_galpao(Galpao *galpao){
     //apenas teste para para de dar erro
     
     printf(get_conteudo(&galpao->lista_de_pacotes.primeiro->pacote));
