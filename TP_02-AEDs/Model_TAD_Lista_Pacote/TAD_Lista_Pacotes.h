@@ -34,7 +34,7 @@ void inserir_pacote_final (Lista_pacote *lista, Pacote *pacote);
 //Esta função irá remover o pacote que esta no inicio da lista
 int remover_pacote_inicio (Lista_pacote *lista, Pacote *pacote);
 
-void remover_pacote_meio(Celula *celula, Pacote *pacote);
+void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote);
 
 //devera imprimir os dados dos pacotes que estão presentes na lista
 void imprime_lista (Lista_pacote *lista);

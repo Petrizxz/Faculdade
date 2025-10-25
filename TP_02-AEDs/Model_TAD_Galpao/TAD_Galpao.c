@@ -25,19 +25,19 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
     //Gera as combinações e armazena elas na lista_combinação
     // otavio essa é pra vc 
-    Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_carregado);    
-
+    
     // Enquanto tiver item no galpão
     int num_viagem = 1;
-
+    
     //Enquanto tiver pacotes no galpao
     while (!lista_eh_vazia(&galpao->lista_de_pacotes)){   
+        Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_carregado);    
 
         printf("\nCarregando drone com os pacotes!\n" );
         
         // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor
         if (melhor_combinacao->celula_pacotes == NULL) melhor_combinacao = escolher_melhor(&lista_combinacao);
-
+        printf("teste: pos escolher melhor combinacao");
         // Verifica enquanto tiver pacote e o drone suportar, ou seja restringe as viagens do drone
         // TOM: Verifica as condições
         // carga suportada acredito que não seja mais necessaria pois dentro de gerar combinações o otavio ja verifica se as combinações não excedem o pesso do drone
@@ -55,8 +55,8 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
             // *pacote = p2.pacote
             // free(p2)
             // Acho que seria algo assim
-            remover_pacote_meio(melhor_combinacao->celula_pacotes[i], &pacote);
-            
+            remover_pacote_meio(&galpao->lista_de_pacotes,melhor_combinacao->celula_pacotes[i], &pacote);
+            imprimi_galpao(galpao);
             // Insere o pacote no drone
             carregamento_drone(drone, pacote);
         }
