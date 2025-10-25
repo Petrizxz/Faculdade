@@ -11,6 +11,7 @@ typedef struct Celula_str
 {
     Pacote pacote;
     struct Celula_str *prox;
+    struct Celula_str *anterior;
     
 } Celula;
 
