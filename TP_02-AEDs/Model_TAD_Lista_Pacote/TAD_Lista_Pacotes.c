@@ -33,8 +33,41 @@ int remover_pacote_inicio (Lista_pacote *lista, Pacote * pacote){
 
 // TOM: Aqui vc vai implementar o racionio do remover do meio
 // Deixei pacote = celula.pacote pra eu conseguir tester mais coisas
-void remover_pacote_meio (Celula *celula, Pacote * pacote){
+
+
+void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote) {
+    if (lista_eh_vazia(lista) || celula == NULL || celula == lista->primeiro) {
+        printf("Erro: célula inválida para remoção.\n");
+        return;
+    }
+
+    // Ponteiro auxiliar para percorrer a lista
+    Celula *anterior = lista->primeiro;
+    
+    // Encontra o nó anterior à célula que será removida
+    while (anterior->prox != NULL && anterior->prox != celula) {
+        anterior = anterior->prox;
+    }
+
+    // Se não encontrou a célula na lista
+    if (anterior->prox == NULL) {
+        printf("Erro: célula não encontrada na lista.\n");
+        return;
+    }
+
+    // Copia os dados do pacote que vai ser removido
     *pacote = celula->pacote;
+
+    // Remove a célula da lista
+    anterior->prox = celula->prox;
+
+    // Se o elemento removido era o último, atualiza o ponteiro 'ultimo'
+    if (celula == lista->ultimo) {
+        lista->ultimo = anterior;
+    }
+
+    // Libera a memória
+    free(celula);
 }
 
 void imprime_lista (Lista_pacote *lista){
@@ -46,7 +79,7 @@ void imprime_lista (Lista_pacote *lista){
         printf("Destinatario: %s\n", get_destinatario(&aux->pacote));
         printf("Distancia: %d\n", get_distancia_endereco(&aux->pacote));
         printf("Peso: %d\n", get_peso(&aux->pacote));
-        printf("----------------------------------/n/n");
+        printf("----------------------------------\n\n");
         aux = aux-> prox;
     }
 }

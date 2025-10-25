@@ -37,5 +37,7 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
 // Adiciona o pacote na lista, armazenando dentro do drone,
 Celula_Combinacao *escolher_melhor(Lista_combinacao *lista);
 
+int lista_combinacao_eh_vazia (Lista_combinacao *lista);
+void remover_pacote_combinacao_meio(Lista_combinacao *lista, Celula *celula, Pacote *pacote);
 
 #endif
