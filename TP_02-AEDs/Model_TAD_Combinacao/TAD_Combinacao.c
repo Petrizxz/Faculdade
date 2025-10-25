@@ -11,7 +11,7 @@ void iniciar_lista_vazia_combinacao (Lista_combinacao *lista){
 void inserir_combinacao_final(Lista_combinacao *lista, Celula **vetor_pacotes, int prioridade, int peso, int elementos){
     lista->ultimo->prox = (Celula_Combinacao*) malloc(sizeof(Celula_Combinacao));
     lista->ultimo = lista->ultimo->prox;
-    lista->ultimo->celula_pacotes = (Celula**) malloc(elementos * sizeof(Celula));
+    lista->ultimo->celula_pacotes = (Celula**) malloc(elementos * sizeof(Celula*));
     for(int i = 0; i < elementos; i++){
         lista->ultimo->celula_pacotes[i] = vetor_pacotes[i];
     }
@@ -109,7 +109,18 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
                 peso_total += todos_pacotes[comb[i]]->pacote.peso;
                 prioridade_total += todos_pacotes[comb[i]]->pacote.prioridade;
             }
-
+            
+            printf("----------------------------\n");
+            printf("Combinacao\n");
+            for (int i = 0; i < tamanho; i++) {
+                printf(todos_pacotes[comb[i]]->pacote.destinatario);
+                printf("\n");
+                
+            }
+            printf("peso total: %d\n", peso_total);
+            printf("prioridade total:%d\n", prioridade_total);
+            if (peso_total > peso_max_drone) printf("INVALIDO XXXXXXXXXXX\n\n");
+            
             // Checa se a combinação é valida ou viavel para o drone 
             if (peso_total <= peso_max_drone) {
                 Celula **vetor_pacotes = (Celula**) malloc(tamanho * sizeof(Celula*));
@@ -154,7 +165,7 @@ Celula_Combinacao *escolher_melhor(Lista_combinacao *lista){
 
     Celula_Combinacao *aux = lista->primeiro->prox->prox;
     while (aux) {
-        if(aux->num_elementos > melhor_opcao->num_elementos){
+        if(aux->prioridade_total > melhor_opcao->prioridade_total){
             melhor_opcao = aux;
         }
         aux = aux->prox;
