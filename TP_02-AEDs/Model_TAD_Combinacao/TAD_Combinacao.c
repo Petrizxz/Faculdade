@@ -67,8 +67,6 @@ void remover_combinacoes_com_intersecao(Lista_combinacao *lista, Celula_Combinac
     }
 }
 
-
-
 /*
 Essa função ela ja é resposnsavel por gerar todas as combinações e ja retorna para nos a melhor delas 
 de acordo com aquela que tiver a maior prioridade
