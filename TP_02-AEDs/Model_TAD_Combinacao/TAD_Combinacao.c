@@ -110,16 +110,6 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
                 prioridade_total += todos_pacotes[comb[i]]->pacote.prioridade;
             }
             
-            printf("----------------------------\n");
-            printf("Combinacao\n");
-            for (int i = 0; i < tamanho; i++) {
-                printf(todos_pacotes[comb[i]]->pacote.destinatario);
-                printf("\n");
-                
-            }
-            printf("peso total: %d\n", peso_total);
-            printf("prioridade total:%d\n", prioridade_total);
-            if (peso_total > peso_max_drone) printf("INVALIDO XXXXXXXXXXX\n\n");
             // Verifica se a combinação é válida (peso <= peso_max_drone)
             if (peso_total <= peso_max_drone) {
                 // Cria vetor com os ponteiros para as células dos pacotes

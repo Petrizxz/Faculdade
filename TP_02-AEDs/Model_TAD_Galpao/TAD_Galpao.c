@@ -71,6 +71,6 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
         realizar_entrega(drone);
     }
     printf("\nTodas as entregas realizadas!\n" );
-    printf("Total de Quilometros Percorridos no Dia: %.0fKm", drone->distancia_total);
+    printf("Total de Quilometros Percorridos no Dia: %.0fKmn\n", drone->distancia_total);
 }
 

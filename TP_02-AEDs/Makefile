@@ -38,7 +38,7 @@ OBJS = $(SRCS:.c=.o)
 # No Linux/Mac/WSL, $(OS) não é definida, então entra no "else"
 ifeq ($(OS),Windows_NT)
     # Nome do executável no Windows precisa de ".exe"
-    TARGET = tp01.exe
+    TARGET = tp02.exe
     
     # Comando para remover arquivos no Windows
     # "del /Q" = delete quiet (sem pedir confirmação)
@@ -49,7 +49,7 @@ ifeq ($(OS),Windows_NT)
     FIXPATH = $(subst /,\,$1)
 else
     # No Linux/Mac/WSL o executável não precisa de extensão
-    TARGET = tp01
+    TARGET = tp02
     
     # Comando para remover arquivos no Linux/Mac/WSL
     RM = rm -f
@@ -90,8 +90,8 @@ clean:
 
 # "make run" → compila e executa o programa
 # - Garante que o executável exista chamando $(TARGET) antes
-# - No Linux: "./tp01"
-# - No Windows: "tp01.exe"
+# - No Linux: "./tp02"
+# - No Windows: "tp02.exe"
 run: $(TARGET)
 	./$(TARGET)
 
