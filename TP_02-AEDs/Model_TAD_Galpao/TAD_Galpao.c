@@ -78,7 +78,7 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
 }
 
 void imprime_galpao(Galpao *galpao){
-    //apenas teste para para de dar erro
+    //apenas teste para parar de dar erro
     
     printf(get_conteudo(&galpao->lista_de_pacotes.primeiro->pacote));
 }
