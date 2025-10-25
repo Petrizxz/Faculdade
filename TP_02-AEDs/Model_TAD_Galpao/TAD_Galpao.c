@@ -25,13 +25,22 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
     // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
     //Gera as combinações e armazena elas na lista_combinação
     // otavio essa é pra vc 
+<<<<<<< Updated upstream
     Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_max);    
+=======
+    Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_max);
+>>>>>>> Stashed changes
     // Enquanto tiver item no galpão
     int num_viagem = 1;
     
     //Enquanto tiver pacotes no galpao
     while (!lista_eh_vazia(&galpao->lista_de_pacotes)){   
+<<<<<<< Updated upstream
         
+=======
+            
+
+>>>>>>> Stashed changes
         printf("\nCarregando drone com os pacotes!\n" );
         
         // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor

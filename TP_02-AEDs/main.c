@@ -65,6 +65,10 @@ int main(){
             printf("\nDigite o nome do arquivo desejado:\n(teste1.txt ou teste2.txt)\n");
             //scanf("%s", arquivo);
             strcpy(arquivo, "teste1.txt");
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
             // Manipulação de arquivos
             FILE *file = fopen(arquivo, "r");
             if(file == NULL){
