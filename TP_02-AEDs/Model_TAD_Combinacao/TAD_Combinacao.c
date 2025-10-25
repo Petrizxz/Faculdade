@@ -72,39 +72,39 @@ Essa função ela ja é resposnsavel por gerar todas as combinações e ja retor
 de acordo com aquela que tiver a maior prioridade
 */
 Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *lista_galpao, int peso_max_drone){
-
     Celula_Combinacao *melhor_opcao = NULL;
 
-    // Pega o numero de pacotes na lista
+    // Conta número de pacotes disponíveis
     int numero_de_elementos_da_combinacao = 0;
     Celula *aux = lista_galpao->primeiro->prox;
     while (aux != NULL) {
-        numero_de_elementos_da_combinacao ++;
+        numero_de_elementos_da_combinacao++;
         aux = aux->prox;
     }
 
-     // Array de acesso rápido aos pacotes atuais
+    // Array de acesso rápido aos pacotes atuais
     Celula **todos_pacotes = (Celula**) malloc(numero_de_elementos_da_combinacao * sizeof(Celula*));
     aux = lista_galpao->primeiro->prox;
     for(int i = 0; i < numero_de_elementos_da_combinacao; i++) {
         todos_pacotes[i] = aux;
         aux = aux->prox;
     }
-
-    // Gera combinações apenas com pacotes DISPONÍVEIS
-    for (int tamanho = numero_de_elementos_da_combinacao; tamanho >= 1; tamanho--) {
-        int comb[tamanho];
+    
+    // Gera todas as combinações possíveis (de todos os tamanhos)
+    for (int tamanho = 1; tamanho <= numero_de_elementos_da_combinacao; tamanho++) {
+        // Array para armazenar os índices da combinação atual
+        int *comb = (int*) malloc(tamanho * sizeof(int));
         
-        // Inicializa com maior combinação
+        // Inicializa com a primeira combinação possível
         for (int i = 0; i < tamanho; i++) {
-            comb[i] = numero_de_elementos_da_combinacao - tamanho + i;
+            comb[i] = i;
         }
         
         while (1) {
             int peso_total = 0;
             int prioridade_total = 0;
             
-            // Soma o peso e a prioridade da combinação gerada
+            // Calcula peso e prioridade da combinação atual
             for (int i = 0; i < tamanho; i++) {
                 peso_total += todos_pacotes[comb[i]]->pacote.peso;
                 prioridade_total += todos_pacotes[comb[i]]->pacote.prioridade;
@@ -120,38 +120,44 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
             printf("peso total: %d\n", peso_total);
             printf("prioridade total:%d\n", prioridade_total);
             if (peso_total > peso_max_drone) printf("INVALIDO XXXXXXXXXXX\n\n");
-            
-            // Checa se a combinação é valida ou viavel para o drone 
+            // Verifica se a combinação é válida (peso <= peso_max_drone)
             if (peso_total <= peso_max_drone) {
+                // Cria vetor com os ponteiros para as células dos pacotes
                 Celula **vetor_pacotes = (Celula**) malloc(tamanho * sizeof(Celula*));
                 for (int i = 0; i < tamanho; i++) {
                     vetor_pacotes[i] = todos_pacotes[comb[i]];
                 }
-
+                
                 // Insere combinação na lista
                 inserir_combinacao_final(lista, vetor_pacotes, prioridade_total, peso_total, tamanho);
-
-                //free em vetor_pacotes (vetor temporario do loop)
-                free(vetor_pacotes);
-
-                // Define a melhor opção e armazena seu endereço
-                if (melhor_opcao == NULL || prioridade_total > melhor_opcao->prioridade_total) {
+                
+                // Atualiza melhor opção
+                if (melhor_opcao == NULL || 
+                    prioridade_total > melhor_opcao->prioridade_total ||
+                    (prioridade_total == melhor_opcao->prioridade_total && peso_total < melhor_opcao->peso_total)) {
                     melhor_opcao = lista->ultimo;
                 }
+
+                free(vetor_pacotes);
             }
 
-            // Próxima combinação...
+            // Gera próxima combinação
             int i = tamanho - 1;
-            while (i >= 0 && comb[i] == i + (numero_de_elementos_da_combinacao - tamanho)) {
+            while (i >= 0 && comb[i] == numero_de_elementos_da_combinacao - tamanho + i) {
                 i--;
             }
-            if (i < 0) break;
             
-            comb[i]--;
+            if (i < 0) {
+                break; // Todas as combinações deste tamanho foram geradas
+            }
+            
+            comb[i]++;
             for (int j = i + 1; j < tamanho; j++) {
                 comb[j] = comb[j - 1] + 1;
             }
         }
+        
+        free(comb);
     }
 
     free(todos_pacotes);
@@ -159,10 +165,10 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
 }
 
 Celula_Combinacao *escolher_melhor(Lista_combinacao *lista){
-
+    
     // Pega o primeiro como a melhor opção
     Celula_Combinacao *melhor_opcao = lista->primeiro->prox;
-
+    
     Celula_Combinacao *aux = lista->primeiro->prox->prox;
     while (aux) {
         if(aux->prioridade_total > melhor_opcao->prioridade_total){

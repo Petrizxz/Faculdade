@@ -36,7 +36,6 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
         
         // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor
         if (melhor_combinacao->celula_pacotes == NULL) melhor_combinacao = escolher_melhor(&lista_combinacao);
-        printf("teste: pos escolher melhor combinacao");
         // Verifica enquanto tiver pacote e o drone suportar, ou seja restringe as viagens do drone
         // TOM: Verifica as condições
         // carga suportada acredito que não seja mais necessaria pois dentro de gerar combinações o otavio ja verifica se as combinações não excedem o pesso do drone
