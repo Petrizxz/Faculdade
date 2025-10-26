@@ -28,6 +28,7 @@ void iniciar_lista_vazia_combinacao (Lista_combinacao *lista);
 void inserir_combinacao_final(Lista_combinacao *lista, Celula **vetor_pacotes, int prioridade, int peso, int elementos);
 
 void remover_combinacoes_com_intersecao(Lista_combinacao *lista, Celula_Combinacao *melhor);
+void remover_combinacao_especifica(Lista_combinacao *lista, Celula_Combinacao *celula_a_remover);
 
 int remover_pacote_celula(Celula *celula, Pacote *pacote);
 
@@ -36,7 +37,6 @@ Celula_Combinacao *gerar_combinacoes(Lista_combinacao *lista, Lista_pacote *list
 
 // Adiciona o pacote na lista, armazenando dentro do drone,
 Celula_Combinacao *escolher_melhor(Lista_combinacao *lista);
-
 int lista_combinacao_eh_vazia (Lista_combinacao *lista);
 void remover_pacote_combinacao_meio(Lista_combinacao *lista, Celula *celula, Pacote *pacote);
 

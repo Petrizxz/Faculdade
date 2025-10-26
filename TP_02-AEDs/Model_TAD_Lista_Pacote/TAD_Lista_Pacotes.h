@@ -40,4 +40,9 @@ void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote);
 //devera imprimir os dados dos pacotes que estão presentes na lista
 void imprime_lista (Lista_pacote *lista);
 
+//ALTERADO: Adicionada função para remoção segura por conteúdo
+int remover_pacote_por_conteudo(Lista_pacote *lista, Pacote *pacote_alvo);
+
+
+
 #endif

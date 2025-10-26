@@ -2,8 +2,8 @@
 #include "../Model_TAD_Lista_Pacote/TAD_Lista_Pacotes.h"
 #include "../Model_TAD_Drone/TAD_Drone.h"
 #include "../Model_TAD_Combinacao/TAD_Combinacao.h"
+#include <stdlib.h> // Para free()
 
-// Vamos iniciar a lista e chamamos a funcao inicializar lista vazia
 void inicializar_galpao(Galpao *galpao){
     Lista_pacote lista;
     iniciar_lista_vazia(&lista);
@@ -11,49 +11,79 @@ void inicializar_galpao(Galpao *galpao){
 }
 
 void receber_pacote_galpao(Galpao *galpao, Pacote pacote){
-
-    // Vai organizando os pacotes, por ordem de chegada, a medida que vai chegando pacotes
     inserir_pacote_final(&galpao->lista_de_pacotes, &pacote);
-    
 }
 
 void carregamento_galpao(Galpao *galpao, Drone *drone){
-
-    // OTAVIO: TOM: Essa foi a primeira modificação, criar o tipo lista combinação
+    // Cria o tipo lista combinação
     Lista_combinacao lista_combinacao;
     iniciar_lista_vazia_combinacao(&lista_combinacao);
-    // OTAVIO: TOM: aqui foi a segunda modificação gerar as combinação
-    //Gera as combinações e armazena elas na lista_combinação
-    // otavio essa é pra vc 
+    
+    // Gera as combinações e retorna a melhor opção
     Celula_Combinacao *melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_max);    
-    // Enquanto tiver item no galpão
     int num_viagem = 1;
     
-    //Enquanto tiver pacotes no galpao
+    // Verifica se foi encontrada uma combinação valida
+    if (melhor_combinacao == NULL) {
+        printf("Nenhuma combinacao valida encontrada!\n");
+        return;
+    }
+
+    // Enquanto tiver pacotes no galpao
     while (!lista_eh_vazia(&galpao->lista_de_pacotes)){   
         
         printf("\nCarregando drone com os pacotes!\n" );
         
-        // Caso não tenha a melhor combinação ele vai percorrer as opções verificando a melhor
-        if (melhor_combinacao->celula_pacotes == NULL) melhor_combinacao = escolher_melhor(&lista_combinacao);
-        // Verifica enquanto tiver pacote e o drone suportar, ou seja restringe as viagens do drone
-        // TOM: Verifica as condições
-        // carga suportada acredito que não seja mais necessaria pois dentro de gerar combinações o otavio ja verifica se as combinações não excedem o pesso do drone
-        // Tenho uns 90% de certeza que pode arrancar a carga_suportada dali
-        // Tem que verificar em que momento esse vetor fica vazio mas pra isso precisa implementar o remover pacote meio
-        for(int i = 0; i < melhor_combinacao->num_elementos;i++){
+        // CORREÇÃO: Se melhor_combinacao for NULL, precisamos gerar novas combinações.
+        // O fluxo original estava incorreto, pois só gerava na primeira vez.
+        if (melhor_combinacao == NULL || lista_combinacao_eh_vazia(&lista_combinacao)) {
+            // Limpa a lista de combinações anterior
+            Celula_Combinacao *atual_limpeza = lista_combinacao.primeiro->prox; // Começa após a cabeça
+            while (atual_limpeza != NULL) {
+                Celula_Combinacao *proximo = atual_limpeza->prox;
+                if (atual_limpeza->celula_pacotes != NULL) {
+                    free(atual_limpeza->celula_pacotes);
+                }
+                free(atual_limpeza);
+                atual_limpeza = proximo;
+            }
+            // Reinicia a lista (apenas a cabeça)
+            lista_combinacao.ultimo = lista_combinacao.primeiro;
+            lista_combinacao.primeiro->prox = NULL;
+            
+            // Gera novas combinações
+            melhor_combinacao = gerar_combinacoes(&lista_combinacao, &galpao->lista_de_pacotes, drone->peso_max);
+            
+            if (melhor_combinacao == NULL) {
+                printf("Nao ha mais combinacoes validas!\n");
+                break;
+            }
+        }
+        
+        // VERIFICAÇÃO DE SEGURANÇA: Verifica se todos os ponteiros são válidos
+        int combinacao_valida = 1;
+        for(int i = 0; i < melhor_combinacao->num_elementos; i++){
+            // O erro de Segmentation Fault acontecia aqui, porque o ponteiro era inválido.
+            // A solução é garantir que a célula de pacote não seja liberada em remover_pacote_meio.
+            if (melhor_combinacao->celula_pacotes[i] == NULL) {
+                combinacao_valida = 0;
+                printf("Erro: Ponteiro de pacote invalido na combinacao!\n");
+                break;
+            }
+        }
+        
+        if (!combinacao_valida) {
+            break;
+        }
+        
+        for(int i = 0; i < melhor_combinacao->num_elementos; i++){
             // Instancia pacote para receber os dados do retirado a baixo
             Pacote pacote;
-            // TOM: 
-            // Retira o pacote do galpao
-            // Essa função vai receber o ponteiro da celula que vai ser retirada e utilizando o anterior vai ligar com o prox
-            // ex: apagar p2
-            // p2: tem os dados anterior: p1  e proximo p3
-            // p2.anterior.prox   (Esse é o p1) = p2.prox (Esse é o p3)
-            // *pacote = p2.pacote
-            // free(p2)
-            // Acho que seria algo assim
-            remover_pacote_meio(&galpao->lista_de_pacotes,melhor_combinacao->celula_pacotes[i], &pacote);
+           
+            // Remove pacote em qualquer lugar da lista
+            // A função remover_pacote_meio NÃO deve liberar a célula.
+            remover_pacote_meio(&galpao->lista_de_pacotes, melhor_combinacao->celula_pacotes[i], &pacote);
+
             // Insere o pacote no drone
             carregamento_drone(drone, pacote);
         }
@@ -62,15 +92,33 @@ void carregamento_galpao(Galpao *galpao, Drone *drone){
         remover_combinacoes_com_intersecao(&lista_combinacao, melhor_combinacao);
 
         // Libera o espaço de memoria alocada para a combinação
-        free(melhor_combinacao->celula_pacotes);
-        melhor_combinacao->celula_pacotes = NULL;
+        if (melhor_combinacao->celula_pacotes != NULL) {
+            free(melhor_combinacao->celula_pacotes);
+            melhor_combinacao->celula_pacotes = NULL;
+        }
+
         // Mostra o numero da viagem
         printf("\n-----------------------------------------\n");
         printf("\nViagem: %d\n", num_viagem++);
+        
         // Realiza as entregas dos pacotes
         realizar_entrega(drone);
+        
+        // Reset para próxima iteração
+        melhor_combinacao = NULL;
     }
+    
     printf("\nTodas as entregas realizadas!\n" );
-    printf("Total de Quilometros Percorridos no Dia: %.0fKmn\n", drone->distancia_total);
+    printf("Total de Quilometros Percorridos no Dia: %.0fKm\n", drone->distancia_total);
+    
+    // LIMPEZA FINAL: Libera toda a lista de combinações
+    Celula_Combinacao *atual = lista_combinacao.primeiro;
+    while (atual != NULL) {
+        Celula_Combinacao *proximo = atual->prox;
+        if (atual != lista_combinacao.primeiro && atual->celula_pacotes != NULL) {
+            free(atual->celula_pacotes);
+        }
+        free(atual);
+        atual = proximo;
+    }
 }
-

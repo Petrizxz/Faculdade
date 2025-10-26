@@ -1,7 +1,5 @@
 #include "TAD_Lista_Pacotes.h"
 
-// TOM: Tom pra vc inserir o anterior aqui acredito que vc vai precisar mexer em iniciar lista vazia
-// inserir_pacote_final, precisa acrescentar aque sempre que inserir um novo vamos armazenar o endereço do anterior no novo
 void iniciar_lista_vazia (Lista_pacote *lista){
     lista->primeiro = (Celula*) malloc(sizeof(Celula));
     lista->ultimo = lista->primeiro;
@@ -13,7 +11,6 @@ int lista_eh_vazia (Lista_pacote *lista){
     return (lista->primeiro == lista->ultimo);
 }
 
-// TOM: Antes de fazer ultimo receber o novo tem que pegar o endereço dele para armazenar no anterior
 void inserir_pacote_final (Lista_pacote *lista, Pacote *pacote){
     Celula *nova = (Celula *) malloc(sizeof(Celula));
     nova->pacote = *pacote;
@@ -21,10 +18,8 @@ void inserir_pacote_final (Lista_pacote *lista, Pacote *pacote){
     nova->anterior = lista->ultimo;
     lista->ultimo->prox = nova;
     lista->ultimo = nova;
-
 }
 
-//Recebe a lista a ter seu item removido e devolve esse item atravez do parametro pacote
 int remover_pacote_inicio (Lista_pacote *lista, Pacote * pacote){
     if (lista_eh_vazia(lista)) return 0;
 
@@ -42,13 +37,9 @@ int remover_pacote_inicio (Lista_pacote *lista, Pacote * pacote){
     return 1;
 }
 
-// TOM: Aqui vc vai implementar o racionio do remover do meio
-// Deixei pacote = celula.pacote pra eu conseguir tester mais coisas
-
-
 void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote) {
     if (lista_eh_vazia(lista) || celula == NULL || celula == lista->primeiro) {
-        printf("Erro: célula inválida para remoção.\n");
+        printf("Erro: celula invalida para remocao.\n");
         return;
     }
     
@@ -64,7 +55,9 @@ void remover_pacote_meio(Lista_pacote *lista, Celula *celula, Pacote *pacote) {
     else
         lista->ultimo = celula->anterior; // era o último
 
-    free(celula);
+    // A célula NÃO deve ser liberada aqui, pois o ponteiro para ela é usado nas combinações.
+    // A liberação deve ser feita em TAD_Galpao.c, APÓS o uso da combinação.
+    // free(celula); // Comentado para evitar o dangling pointer.
 }
 
 void imprime_lista (Lista_pacote *lista){
@@ -80,3 +73,6 @@ void imprime_lista (Lista_pacote *lista){
         aux = aux-> prox;
     }
 }
+
+
+

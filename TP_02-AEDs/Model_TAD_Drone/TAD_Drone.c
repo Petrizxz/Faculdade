@@ -9,7 +9,6 @@ void inicializar_drone (Drone *drone, int peso){
     drone->lista_de_entrega = lista;
 }
 
-
 int carga_suportada(Drone *drone, int peso){
     if ((drone->peso_carregado + peso) > drone->peso_max && lista_eh_vazia(&drone->lista_de_entrega)){
         printf("\nO drone nao suporta a carga!\n\n");
@@ -23,9 +22,7 @@ int carga_suportada(Drone *drone, int peso){
     return 1;
 }
 
-// antes da função ser chamada deve ser verificado se a carga é suportada
 int carregamento_drone(Drone *drone, Pacote pacote){
-
     //Adiciona o pacote no drone
     inserir_pacote_final(&drone->lista_de_entrega, &pacote);
 
@@ -38,41 +35,45 @@ int carregamento_drone(Drone *drone, Pacote pacote){
 void realizar_entrega(Drone *drone){
     // Utilizado para marcar posição atual do drone em relação a ultima entrega/galpao
     int posicao_atual = 0, temp_dist = 0;
-           // Enquanto o drone ainda tiver entregas para fazer
+    
+    printf("\nIniciando entregas:\n");
+    
+    // Enquanto o drone ainda tiver entregas para fazer
     while (!lista_eh_vazia(&drone->lista_de_entrega))
     {   
         // Remove o pacote do drone, para realizar entrega
         Pacote pacote;
         remover_pacote_inicio(&drone->lista_de_entrega, &pacote);
         
-        // Distancia que o drone percorre partindo da base ou da última entrega para a próxima
-        posicao_atual = get_distancia_endereco(&pacote) - posicao_atual;
+        // CORREÇÃO: Calcula distância usando valor absoluto
+        int distancia_destino = get_distancia_endereco(&pacote);
+        int distancia_percorrida = abs(distancia_destino - posicao_atual);
         
-        // Somamos o modulo, pois, ele pode percorrer direções opostas à ultima entrega/galpão
-        drone->distancia_total += (posicao_atual < 0) ? -(posicao_atual) : posicao_atual;
-        // Armazena a distancia temporaria do pacote 
-        temp_dist += (posicao_atual < 0) ? -(posicao_atual) : posicao_atual;
+        // Atualiza distâncias
+        drone->distancia_total += distancia_percorrida;
+        temp_dist += distancia_percorrida;
 
         // Atualiza a posição do drone de acordo com a entrega realizada
-        posicao_atual = get_distancia_endereco(&pacote);
-
+        posicao_atual = distancia_destino;
         
         // Imprime qual foi a entrega realizada
         imprime_drone(pacote);
+        printf("Distancia percorrida ate esta entrega: %dKm\n", distancia_percorrida);
     }
-    // Atualiza a distancia temporaria do pacote 
-    temp_dist += posicao_atual;
+    
+    // O drone retorna para o galpão ao final do percurso
+    int distancia_retorno = posicao_atual; // volta para posição 0
+    temp_dist += distancia_retorno;
+    drone->distancia_total += distancia_retorno;
     
     // Printa distancia total dessa viagem
-    printf ("Distancia total: %dKm\n", temp_dist);
-    printf("\n-----------------------------------------\n" ); 
-    // O drone retorna para o galpão ao final do percurso
-    drone->distancia_total += posicao_atual;
-    //todas as entregas foram realizadas
+    printf("\nDistancia total da viagem: %dKm\n", temp_dist);
+    printf("\n-----------------------------------------\n" );
+    
+    // Todas as entregas foram realizadas
     drone->peso_carregado = 0;
 
     printf("\nVoltando para o galpao!\n" );
-    
 }
 
 void imprime_drone(Pacote pacote){
